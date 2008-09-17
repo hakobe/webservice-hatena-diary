@@ -18,7 +18,7 @@ my $dusername = $ENV{WEBSERVICE_HATENA_DIARY_TEST_DUSERNAME} || $username;
 my $password  = $ENV{WEBSERVICE_HATENA_DIARY_TEST_PASSWORD};
 
 if ($username && $password) {
-    plan tests => 9;
+    plan tests => 12;
 }
 else {
     plan skip_all => "Set ENV:WEBSERVICE_HATENA_DIARY_TEST_USERNAME/PASSWORD";
@@ -66,6 +66,22 @@ is($entry->{title},   $input_data->{title});
 is($entry->{content}, $input_data->{content});
 is($entry->{date},    $now->ymd);
 
+#$client->publish($edit_uri);
+#$client->{mode} = 'blog'; # blogモード
+#$entry = $client->retrieve($edit_uri);
+#is($entry->{title},   $input_data->{title});
+#is($entry->{content}, $input_data->{content});
+#is($entry->{date},    $now->ymd);
+#$client->{mode} = 'draft'; # draftモード
+
+# list
+sleep 1; # wait for create
+my @entries = $client->list;
+p \@entries;
+$entry = $entries[0];
+is($entry->{title},         $input_data->{title});
+is($entry->{content}, $input_data->{content});
+is($entry->{date},    $now->ymd);
 
 $client->delete($edit_uri);
 $entry = $client->retrieve($edit_uri);

@@ -18,7 +18,7 @@ my $dusername = $ENV{WEBSERVICE_HATENA_DIARY_TEST_DUSERNAME} || $username;
 my $password  = $ENV{WEBSERVICE_HATENA_DIARY_TEST_PASSWORD};
 
 if ($username && $password) {
-    plan tests => 16;
+    plan tests => 19;
 }
 else {
     plan skip_all => "Set ENV:WEBSERVICE_HATENA_DIARY_TEST_USERNAME/PASSWORD";
@@ -41,13 +41,15 @@ my $entry;
 my $input_data = {
     title   => 'test title',
     content => 'test content',
-    date    => '2008-01-01',
+    date    => '2010-01-01',
 };
 
+# create
 $edit_uri = $client->create({
     title   => $input_data->{title},
     content => $input_data->{content},
 });
+#retrieve
 $entry = $client->retrieve($edit_uri);
 
 is($entry->{title},         $input_data->{title});
@@ -56,6 +58,7 @@ ok($entry->{content});
 is($entry->{date},          $now->ymd);
 
 
+# update
 $input_data->{title}   .= ' updated';
 $input_data->{content} .= ' updated';
 $client->update($edit_uri, {
@@ -70,12 +73,14 @@ ok($entry->{content});
 is($entry->{date},          $now->ymd);
 
 
+# delete
 $client->delete($edit_uri);
 $entry = $client->retrieve($edit_uri);
 ok(!$entry);
 $client->client->{_errstr} = ''; # errorをクリア
 
 
+# create with date
 $edit_uri = $client->create({
     title   => $input_data->{title},
     content => $input_data->{content},
@@ -88,8 +93,17 @@ is($entry->{hatena_syntax}, $input_data->{content});
 ok($entry->{content});
 is($entry->{date},          $input_data->{date});
 
+# list
+sleep 1; # wait for create
+my @entries = $client->list;
+$entry = $entries[0];
+is($entry->{title},         $input_data->{title});
+ok($entry->{content});
+is($entry->{date},          $input_data->{date});
+
+
+# delete
 $client->delete($edit_uri);
 $entry = $client->retrieve($edit_uri);
 ok(!$entry);
 $client->client->{_errstr} = ''; # errorをクリア
-

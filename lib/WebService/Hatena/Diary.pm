@@ -30,7 +30,7 @@ sub new {
 }
 
 sub api_uri { 
-    my $self = shift;
+    my ($self) = @_;
     my $api_uri_base = "http://d.hatena.ne.jp/$self->{dusername}/atom/";
     return +{
         blog  => $api_uri_base . "blog/",
@@ -39,6 +39,16 @@ sub api_uri {
 }
 sub client  { shift->{client}; }
 sub errstr  { shift->client->errstr; }
+
+sub list {
+    my ($self) = @_;
+
+    my @entries = map {
+        _to_result($_);
+    } $self->client->getFeed($self->api_uri)->entries;
+
+    return @entries;
+}
 
 sub create {
     my ($self, $args) = @_;
@@ -115,7 +125,7 @@ sub _to_result {
     my ($entry) = @_;
 
     my $hash = {};
-    $hash->{title} = $entry->title         if $entry->title;;
+    $hash->{title}    = $entry->title         if $entry->title;;
     $hash->{content}  = $entry->content->body if $entry->content;
     my $hatena_syntax = $entry->get('http://www.hatena.ne.jp/info/xmlns#', 'syntax');
     $hash->{hatena_syntax} = $hatena_syntax if $hatena_syntax;
