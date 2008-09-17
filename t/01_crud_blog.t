@@ -94,7 +94,7 @@ ok($entry->{content});
 is($entry->{date},          $input_data->{date});
 
 # list
-sleep 1; # wait for create
+sleep 3; # wait for create
 my @entries = $client->list;
 $entry = $entries[0];
 is($entry->{title},         $input_data->{title});

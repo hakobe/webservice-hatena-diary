@@ -18,7 +18,7 @@ my $dusername = $ENV{WEBSERVICE_HATENA_DIARY_TEST_DUSERNAME} || $username;
 my $password  = $ENV{WEBSERVICE_HATENA_DIARY_TEST_PASSWORD};
 
 if ($username && $password) {
-    plan tests => 12;
+    plan tests => 15;
 }
 else {
     plan skip_all => "Set ENV:WEBSERVICE_HATENA_DIARY_TEST_USERNAME/PASSWORD";
@@ -43,10 +43,12 @@ my $input_data = {
     content => 'test content',
 };
 
+# create
 $edit_uri = $client->create({
     title   => $input_data->{title},
     content => $input_data->{content},
 });
+# retrieve
 $entry = $client->retrieve($edit_uri);
 
 is($entry->{title},   $input_data->{title});
@@ -54,6 +56,7 @@ is($entry->{content}, $input_data->{content});
 is($entry->{date},    $now->ymd);
 
 
+# update
 $input_data->{title}   .= ' updated';
 $input_data->{content} .= ' updated';
 $client->update($edit_uri, {
@@ -66,25 +69,33 @@ is($entry->{title},   $input_data->{title});
 is($entry->{content}, $input_data->{content});
 is($entry->{date},    $now->ymd);
 
-#$client->publish($edit_uri);
-#$client->{mode} = 'blog'; # blogモード
-#$entry = $client->retrieve($edit_uri);
-#is($entry->{title},   $input_data->{title});
-#is($entry->{content}, $input_data->{content});
-#is($entry->{date},    $now->ymd);
-#$client->{mode} = 'draft'; # draftモード
 
 # list
-sleep 1; # wait for create
+sleep 3; # wait for create
 my @entries = $client->list;
-p \@entries;
 $entry = $entries[0];
-is($entry->{title},         $input_data->{title});
+is($entry->{title},   $input_data->{title});
 is($entry->{content}, $input_data->{content});
 is($entry->{date},    $now->ymd);
+
 
 $client->delete($edit_uri);
 $entry = $client->retrieve($edit_uri);
 ok(!$entry);
 $client->client->{_errstr} = ''; # errorをクリア
+
+# create for publish
+$edit_uri = $client->create({
+    title   => $input_data->{title},
+    content => $input_data->{content},
+});
+
+# publish
+$client->publish($edit_uri);
+$client->{mode} = 'blog'; # blogモード
+$entry = ($client->list)[0];
+is($entry->{title},   $input_data->{title});
+like($entry->{content}, qr/$input_data->{content}/);
+is($entry->{date},    $now->ymd);
+$client->{mode} = 'draft'; # draftモード
 

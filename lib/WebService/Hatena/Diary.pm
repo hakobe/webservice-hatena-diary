@@ -92,10 +92,10 @@ sub delete {
 
 sub publish {
     my ($self, $edit_uri) = @_;
-    return if $self->{mode} != 'draft';
+    return if $self->{mode} ne 'draft';
 
-    # FIXME ヘッダを設定
     my $req = HTTP::Request->new(PUT => $edit_uri);
+    $req->header('X-HATENA-PUBLISH' => 1);
     my $res = $self->client->make_request($req);
     if ($res->code != 200) {
         $self->client->error("Error on PUT $edit_uri: " . $res->status_line);
