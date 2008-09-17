@@ -18,7 +18,7 @@ my $dusername = $ENV{WEBSERVICE_HATENA_DIARY_TEST_DUSERNAME} || $username;
 my $password  = $ENV{WEBSERVICE_HATENA_DIARY_TEST_PASSWORD};
 
 if ($username && $password) {
-    plan tests => 19;
+    plan tests => 20;
 }
 else {
     plan skip_all => "Set ENV:WEBSERVICE_HATENA_DIARY_TEST_USERNAME/PASSWORD";
@@ -97,9 +97,10 @@ is($entry->{date},          $input_data->{date});
 sleep 3; # wait for create
 my @entries = $client->list;
 $entry = $entries[0];
-is($entry->{title},         $input_data->{title});
+is($entry->{edit_uri}, $edit_uri);
+is($entry->{title},    $input_data->{title});
 ok($entry->{content});
-is($entry->{date},          $input_data->{date});
+is($entry->{date},     $input_data->{date});
 
 
 # delete

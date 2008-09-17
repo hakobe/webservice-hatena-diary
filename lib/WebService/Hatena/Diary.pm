@@ -125,13 +125,20 @@ sub _to_result {
     my ($entry) = @_;
 
     my $hash = {};
+
     $hash->{title}    = $entry->title         if $entry->title;;
     $hash->{content}  = $entry->content->body if $entry->content;
+
     my $hatena_syntax = $entry->get('http://www.hatena.ne.jp/info/xmlns#', 'syntax');
     $hash->{hatena_syntax} = $hatena_syntax if $hatena_syntax;
+
     if ($entry->updated) {
         my $dt = DateTime::Format::W3CDTF->new->parse_datetime($entry->updated);
         $hash->{date} = $dt->ymd;
+    }
+    my ($link) = grep { $_->rel eq 'edit' } $entry->link;
+    if ($link) {
+        $hash->{edit_uri} = $link->href;
     }
 
     return $hash;

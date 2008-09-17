@@ -18,7 +18,7 @@ my $dusername = $ENV{WEBSERVICE_HATENA_DIARY_TEST_DUSERNAME} || $username;
 my $password  = $ENV{WEBSERVICE_HATENA_DIARY_TEST_PASSWORD};
 
 if ($username && $password) {
-    plan tests => 15;
+    plan tests => 16;
 }
 else {
     plan skip_all => "Set ENV:WEBSERVICE_HATENA_DIARY_TEST_USERNAME/PASSWORD";
@@ -74,15 +74,18 @@ is($entry->{date},    $now->ymd);
 sleep 3; # wait for create
 my @entries = $client->list;
 $entry = $entries[0];
-is($entry->{title},   $input_data->{title});
-is($entry->{content}, $input_data->{content});
-is($entry->{date},    $now->ymd);
+is($entry->{edit_uri}, $edit_uri);
+is($entry->{title},    $input_data->{title});
+is($entry->{content},  $input_data->{content});
+is($entry->{date},     $now->ymd);
 
 
+# delete
 $client->delete($edit_uri);
 $entry = $client->retrieve($edit_uri);
 ok(!$entry);
 $client->client->{_errstr} = ''; # errorをクリア
+
 
 # create for publish
 $edit_uri = $client->create({
@@ -93,9 +96,11 @@ $edit_uri = $client->create({
 # publish
 $client->publish($edit_uri);
 $client->{mode} = 'blog'; # blogモード
+
 $entry = ($client->list)[0];
-is($entry->{title},   $input_data->{title});
+is($entry->{title},     $input_data->{title});
 like($entry->{content}, qr/$input_data->{content}/);
-is($entry->{date},    $now->ymd);
+is($entry->{date},      $now->ymd);
+
 $client->{mode} = 'draft'; # draftモード
 
