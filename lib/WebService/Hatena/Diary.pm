@@ -104,18 +104,22 @@ sub publish {
     return 1;
 }
 
+my $formatter = DateTime::Format::W3CDTF->new;
+my $parser = DateTime::Format::Strptime->new(
+    pattern   => '%F',
+    time_zone => 'local',
+);
+
 sub _to_entry {
-    my ($hash) = @_;
+    my ($args) = @_;
 
     my $entry = XML::Atom::Entry->new;
-    $entry->title($hash->{title})     if $hash->{title};
-    $entry->content($hash->{content}) if $hash->{content};
-    if ($hash->{date}) {
-        my $dt = DateTime::Format::Strptime->new(
-            pattern   => '%F',
-            time_zone => 'local',
-        )->parse_datetime($hash->{date});
-        $entry->updated(DateTime::Format::W3CDTF->new->format_datetime($dt));
+    $entry->title($args->{title})     if $args->{title};
+    $entry->content($args->{content}) if $args->{content};
+    if ($args->{date}) {
+        $entry->updated( 
+            $formatter->format_datetime($parser->parse_datetime($args->{date}))
+        );
     }
 
     return $entry;
@@ -124,24 +128,19 @@ sub _to_entry {
 sub _to_result {
     my ($entry) = @_;
 
-    my $hash = {};
+    my $result = {};
 
-    $hash->{title}    = $entry->title         if $entry->title;;
-    $hash->{content}  = $entry->content->body if $entry->content;
+    $result->{title}    = $entry->title         if $entry->title;;
+    $result->{content}  = $entry->content->body if $entry->content;
+    $result->{date}     = $parser->parse_datetime($entry->updated)->ymd if $entry->updated;
 
     my $hatena_syntax = $entry->get('http://www.hatena.ne.jp/info/xmlns#', 'syntax');
-    $hash->{hatena_syntax} = $hatena_syntax if $hatena_syntax;
+    $result->{hatena_syntax} = $hatena_syntax if $hatena_syntax;
 
-    if ($entry->updated) {
-        my $dt = DateTime::Format::W3CDTF->new->parse_datetime($entry->updated);
-        $hash->{date} = $dt->ymd;
-    }
     my ($link) = grep { $_->rel eq 'edit' } $entry->link;
-    if ($link) {
-        $hash->{edit_uri} = $link->href;
-    }
+    $result->{edit_uri} = $link->href if $link;
 
-    return $hash;
+    return $result;
 }
 
 1;
