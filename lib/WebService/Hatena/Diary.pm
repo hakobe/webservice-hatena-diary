@@ -149,7 +149,7 @@ __END__
 
 =head1 NAME
 
-WebService::Hatena::Diary -
+WebService::Hatena::Diary - A Perl Interface for Hatena::Diary AtomPub API
 
 =head1 SYNOPSIS
 
@@ -202,7 +202,7 @@ WebService::Hatena::Diary -
 
 =head1 DESCRIPTION
 
-WebService::Hatena::Diary is
+WebService::Hatena::Diary is a simple wrapper of Hatena::Diary AtomPub API. This provides CRUD interface for Hatena::Diary and it's draft entries. 
 
 =head1 AUTHOR
 
@@ -214,5 +214,15 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =head1 SEE ALSO
+
+=over 4
+
+=item L<http://d.hatena.ne.jp>
+
+=item L<http://d.hatena.ne.jp/keyword/%A4%CF%A4%C6%A4%CA%A5%C0%A5%A4%A5%A2%A5%EA%A1%BCAtomPub>
+
+=item L<WWW::HatenaDiary>
+
+=item L<XML::Atom>
 
 =cut
