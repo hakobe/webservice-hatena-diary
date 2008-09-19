@@ -202,7 +202,7 @@ WebService::Hatena::Diary - A Perl Interface for Hatena::Diary AtomPub API
 
 =head1 DESCRIPTION
 
-WebService::Hatena::Diary is a simple wrapper of Hatena::Diary AtomPub API. This provides CRUD interface for Hatena::Diary and it's draft entries. 
+WebService::Hatena::Diary is a simple wrapper of Hatena::Diary AtomPub API. This provides CRUD interfaces for Hatena::Diary and it's draft entries. 
 
 =head1 AUTHOR
 
