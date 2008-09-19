@@ -37,8 +37,9 @@ sub api_uri {
         draft => $api_uri_base . "draft/",
     }->{$self->{mode}};
 }
-sub client  { shift->{client}; }
+sub client  { shift->{client};       }
 sub errstr  { shift->client->errstr; }
+sub ua      { shift->client->{ua};   }
 
 sub list {
     my ($self) = @_;
