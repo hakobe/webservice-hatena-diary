@@ -155,6 +155,51 @@ WebService::Hatena::Diary -
 
   use WebService::Hatena::Diary;
 
+  my $diary = WebService::Hatena::Diary->new({
+      username  => $username,
+      password  => $password,
+  });
+  $diary->ua->timeout(10) # set ua option
+
+  # list
+  my @entries = $diary->list;
+
+  # create
+  my $edit_uri = $diary->create({
+      title   => $title,
+      content => $content,
+  });
+
+  # create on date
+  $edit_uri = $diary->create({
+      date    => $date, # YYYY-MM-DD
+      title   => $title,
+      content => $content,
+  });
+
+  # retrieve
+  my $entry = $diary->retrieve($edit_uri);
+
+  # update
+  $diary->update($edit_uri, {
+      title   => $new_title,
+      content => $new_content,
+  });
+
+  # delete
+  $diary->delete($edit_uri);
+
+
+  # draft mode
+  $diary = WebService::Hatena::Diary->new({
+      mode      => 'draft',
+      username  => $username,
+      password  => $password,
+  });
+
+  # publish (draft mode only)
+  $diary->publish($edit_uri);
+
 =head1 DESCRIPTION
 
 WebService::Hatena::Diary is
