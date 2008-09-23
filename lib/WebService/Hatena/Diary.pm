@@ -170,7 +170,7 @@ WebService::Hatena::Diary - A Perl Interface for Hatena::Diary AtomPub API
       content => $content,
   });
 
-  # create on date
+  # create on specified date
   $edit_uri = $diary->create({
       date    => $date, # YYYY-MM-DD
       title   => $title,
@@ -179,6 +179,10 @@ WebService::Hatena::Diary - A Perl Interface for Hatena::Diary AtomPub API
 
   # retrieve
   my $entry = $diary->retrieve($edit_uri);
+  print $entry->{date};
+  print $entry->{title};
+  print $entry->{content};
+  print $entry->{hatena_syntax};
 
   # update
   $diary->update($edit_uri, {
@@ -202,7 +206,8 @@ WebService::Hatena::Diary - A Perl Interface for Hatena::Diary AtomPub API
 
 =head1 DESCRIPTION
 
-WebService::Hatena::Diary is a simple wrapper of Hatena::Diary AtomPub API. This provides CRUD interfaces for Hatena::Diary and it's draft entries. 
+WebService::Hatena::Diary is a simple wrapper of Hatena::Diary AtomPub API. 
+This provides CRUD interfaces for Hatena::Diary and it's draft entries. 
 
 =head1 AUTHOR
 
