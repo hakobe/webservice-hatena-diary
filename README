@@ -24,4 +24,9 @@ WebService::Hatena::Diary documentation is available as in POD. So you can do:
 
 to read the documentation online with your favorite pager.
 
+DEVELOPMENT
+
+If you want to see latest version of this module, please see
+https://github.com/hakobe/webservice-hatena-diary/tree
+
 Yohei Fushii

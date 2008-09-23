@@ -18,7 +18,7 @@ my $dusername = $ENV{WEBSERVICE_HATENA_DIARY_TEST_DUSERNAME} || $username;
 my $password  = $ENV{WEBSERVICE_HATENA_DIARY_TEST_PASSWORD};
 
 if ($username && $password) {
-    plan tests => 16;
+    plan tests => 17;
 }
 else {
     plan skip_all => "Set ENV:WEBSERVICE_HATENA_DIARY_TEST_USERNAME/PASSWORD";
@@ -94,13 +94,24 @@ $edit_uri = $diary->create({
 });
 
 # publish
+sleep 3; # wait for create
 $diary->publish($edit_uri);
+
 $diary->{mode} = 'blog'; # blogモード
 
+sleep 3; # wait for publish
 $entry = ($diary->list)[0];
 is($entry->{title},     $input_data->{title});
 like($entry->{content}, qr/$input_data->{content}/);
 is($entry->{date},      $now->ymd);
+
+## delete
+$edit_uri = $entry->{edit_uri};
+$diary->delete($edit_uri);
+$entry = $diary->retrieve($edit_uri);
+ok(!$entry);
+$diary->client->{_errstr} = ''; # errorをクリア
+
 
 $diary->{mode} = 'draft'; # draftモード
 

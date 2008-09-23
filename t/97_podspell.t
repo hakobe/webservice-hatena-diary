@@ -15,3 +15,16 @@ all_pod_files_spelling_ok('lib');
 __DATA__
 Yohei
 Fushii
+API
+AtomPub
+DD
+Hatena
+URI
+YYYY
+blog
+dusername
+errstr
+hatena
+html
+ua
+username
