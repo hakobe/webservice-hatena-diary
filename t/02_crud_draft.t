@@ -1,16 +1,6 @@
 use strict;
 use warnings;
 use Test::More;
-use FindBin::libs;
-use UNIVERSAL::require;
-
-sub p ($) {
-    return unless ($ENV{DEBUG});
-    Data::Dumper->use;
-    Perl6::Say->use;
-
-    say(Dumper(@_));
-}
 
 # From WWW::HatenaDiary's test
 my $username  = $ENV{WEBSERVICE_HATENA_DIARY_TEST_USERNAME};
