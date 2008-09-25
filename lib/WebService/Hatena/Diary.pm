@@ -106,10 +106,8 @@ sub publish {
 }
 
 my $formatter = DateTime::Format::W3CDTF->new;
-my $parser = DateTime::Format::Strptime->new(
-    pattern   => '%F',
-    time_zone => 'local',
-);
+my $parser = DateTime::Format::Strptime->new( pattern   => '%F' );
+eval { $parser->time_zone('local'); };
 
 sub _to_entry {
     my ($args) = @_;
